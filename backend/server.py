@@ -8,6 +8,10 @@ DB_ADDRESS = "db.json"
 if len(sys.argv)>1 and sys.argv[1] == "prod":
     HOST = '0.0.0.0'
 
+@app.route('/')
+def hello():
+    return "the server is up!"
+
 app = Flask(__name__)
 db = TinyDB(DB_ADDRESS)
 
