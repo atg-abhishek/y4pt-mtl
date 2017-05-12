@@ -3,9 +3,9 @@ import requests
 
 CLIENT_ID = 'e562c31c-8d56-4696-858c-9331c21688d4'
 CLIENT_SECRET = 'mYvtKREFRbA4zANzs1NQuGvLQmgOhmvJDpEl6kiu/cQ='
-TOKEN = ''
+PLATFORM_API_URL = 'https://platform.whereismytransport.com/api'
 
-platformApiUrl = 'https://platform.whereismytransport.com/api'
+TOKEN = ''
 
 def getAccessToken():
     payload = {
@@ -19,14 +19,7 @@ def getAccessToken():
     if r.status_code != 200:
         raise Exception("Failed to get token")
 
-    print(r)
     access_token = r.json()['access_token']
-    token_expire = r.json()['expires_in']
-    token_type = r.json()['token_type']
-    print(access_token)
-    print(token_expire)
-    print(token_type)
-
     return access_token
 
 def requestJourney():
@@ -45,7 +38,7 @@ def requestJourney():
 		}
 	}
 
-	r = requests.post("{ROOT}/journeys".format(ROOT=platformApiUrl), json=body, headers=headers)
+	r = requests.post("{ROOT}/journeys".format(ROOT=PLATFORM_API_URL), json=body, headers=headers)
 	journey = r.json()
 
 	print(journey)
