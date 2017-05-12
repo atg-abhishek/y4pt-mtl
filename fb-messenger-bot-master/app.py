@@ -18,7 +18,8 @@ def verify():
         return request.args["hub.challenge"], 200
 		
 	print("patate")	
-
+    sys.stdout.flush()
+    
     return "Hello world", 200
 
 
