@@ -1,2 +1,3 @@
 backend/server.crt
 backend/server.key
+backend/certbot-auto
