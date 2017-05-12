@@ -15,5 +15,9 @@ if len(sys.argv)>1 and sys.argv[1] == "prod":
 def hello():
     return "the server is up!"
 
+@app.route('/test')
+def test():
+    return "echo the endpoint is working"
+
 if __name__ == "__main__":
     app.run(debug=True, port=43001, threaded=True, host=HOST)
