@@ -55,7 +55,7 @@ def activate_route():
     driver_name = body['driverName']
     route_id = body['routeId']
     res_trip = trips.search((Trips.driver_id == driver_name) & (Trips.route_id == route_id))
-    res = passengers.search(Passenger.trip_id == res_trip['trip_id'])
+    res = passengers.search(Passenger.trip_id == res_trip[0]['trip_id'])
     passenger_list = []
     for r in res:
         passenger_list.append({"id" : r['passenger_id'], "curr_loc" : {"latitude" : r['curr_loc']["latitude"], "longitude" : r['curr_loc']['longitude']}, "name" : r['name'], "photo" : r['profile_image'], "status" : r['status'] })
