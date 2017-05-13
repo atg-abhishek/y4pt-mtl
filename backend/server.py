@@ -26,7 +26,13 @@ def hello():
 def test():
     return "echo the endpoint is working"
 
-@app.route('/plan_route')
+@app.route('/add_driver')
+def add_driver():
+    body = request.get_json()
+    add_entry('drivers', body)
+    return "done"
+
+@app.route('/plan_route', methods=['POST'])
 def plan_route():
     body = request.get_json()
     pprint(body)
