@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import sys, requests, wimt
 from tinydb import TinyDB, Query
 from pprint import pprint
@@ -38,7 +38,7 @@ def plan_route():
     pprint(body)
     # POST request 
     # send me the route id , date , time 
-    return "planned route"
+    return jsonify({"result" : "done"})
 
 @app.route('/activate_route', methods=['POST'])
 def activate_route():
@@ -63,7 +63,7 @@ Schema for User
 name, userid, profile_image, curr_loc [lat,lng], status
 
 Schema for Drivers
-active route, status, capacity, curr_passengers
+active route, status (1 is active, 0 is inactive), capacity, curr_passengers
 
 Schema for Routes
 start, stop (each in lat, lng)
