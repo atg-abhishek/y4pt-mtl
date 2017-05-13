@@ -35,7 +35,7 @@ def requestJourney(location , destination):
         }
     }
 
-    r = requests.post("{ROOT}/journeys".format(ROOT=PLATFORM_API_URL), json=body, headers=headers)
+    r = requests.post("{ROOT}/journeys".format(ROOT=PLATFORM_API_URL), data=body, headers=headers)
     journey = r.json()
 
     return journey
@@ -49,7 +49,7 @@ def getLine(location, destination):
             if l['type'] == 'Transit':
                 if l['line']['mode'] == 'ShareTaxi':
                     return l
-    return "no line"
+    return "no line"    
 
 def parseRoute(line):
     route = {}
