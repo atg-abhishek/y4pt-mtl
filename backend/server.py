@@ -19,6 +19,8 @@ trips = db.table('trips')
 Passenger = Query()
 Trips = Query()
 
+WIMT_TOKEN = wimt.getAccessToken()
+
 if len(sys.argv)>1 and sys.argv[1] == "prod":
     HOST = '0.0.0.0'
 
@@ -104,7 +106,11 @@ def add_passenger():
 @app.route('/add_route', methods=['POST'])
 def add_route():
     body = request.get_json()
-    add_entry('routes', body)
+    body['location']
+    body['destination']
+    line = getLine([18.676517,-34.030118],[18.566178,-33.979593])
+    routeJson = parseRoute(line)
+    #add_entry('routes', body)
     return jsonify({"result" : "done"})
 
 '''
