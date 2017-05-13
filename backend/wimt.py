@@ -35,8 +35,10 @@ def requestJourney(location , destination):
         }
     }
 
-    r = requests.post("{ROOT}/journeys".format(ROOT=PLATFORM_API_URL), json=body, headers=headers)
-    journey = r.json()
+    r = requests.post("{ROOT}/journeys".format(ROOT=PLATFORM_API_URL), data=body, headers=headers)
+    journey = json.loads(r.text)
+
+    print(journey)
 
     return journey
 
