@@ -129,7 +129,8 @@ def start_booking():
     dropoff = body['dropoff']
     pickup = body['pickup']
     line = wimt.getLine([pickup['lng'], pickup['lat']], [dropoff['lng'], dropoff['lat']])
-    return jsonify(line)
+    short_name = line['line']['shortName']
+    return jsonify(short_name)
 
 
 '''
