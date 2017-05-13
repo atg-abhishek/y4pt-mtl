@@ -49,6 +49,7 @@ def getLine(location, destination):
             if l['type'] == 'Transit':
                 if l['line']['mode'] == 'ShareTaxi':
                     return l
+    return "no line"
 
 def parseRoute(line):
     route = {}
