@@ -16,6 +16,8 @@ passengers = db.table('passengers')
 routes = db.table('routes')
 trips = db.table('trips')
 
+Passenger = Query()
+
 if len(sys.argv)>1 and sys.argv[1] == "prod":
     HOST = '0.0.0.0'
 
@@ -51,8 +53,12 @@ def activate_route():
 
     return jsonify({"result" : "activated route"})
 
-@app.route('/pickup')
+@app.route('/pickup', methods=['POST'])
 def pickup():
+    body = request.get_json()
+    passenger_id = body['passenger_id']
+    res = passengers.search(Passenger.passenger_id == passenger_id)
+    res[0]['status'] = 1
     return jsonify({"result" : "picked up"})
 
 # optional for now 
