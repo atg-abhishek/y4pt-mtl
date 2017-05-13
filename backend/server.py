@@ -17,6 +17,7 @@ routes = db.table('routes')
 trips = db.table('trips')
 
 Passenger = Query()
+Trips = Query()
 
 if len(sys.argv)>1 and sys.argv[1] == "prod":
     HOST = '0.0.0.0'
@@ -45,11 +46,21 @@ def plan_route():
 
 @app.route('/activate_route', methods=['POST'])
 def activate_route():
-    # POST request with route id 
+    # POST request with driverName, routeId
     # send notification to chatbot
     # response is the list of people taking this route 
-
-
+    body = request.get_json()
+    driver_name = body['driverName']
+    route_id = body['routeId']
+    res_trip = trips.search((Trips.driver_id == driver_name) & (Trips.route_id == route_id))
+    res = passengers.search(Passenger.trip_id == res_trip['trip_id'])
+    passenger_id_list = []
+    for r in res:
+        passenger_id_list.append(res['passenger_id'])
+    '''
+    Send notification to all the passengers subscribed to this one
+    '''
+    
 
     return jsonify({"result" : "activated route"})
 
@@ -97,7 +108,7 @@ DB Functions
 
 '''
 Schema for Passenger
-name, userid, profile_image, curr_loc [lat,lng], status
+name, userid, profile_image, curr_loc [lat,lng], status, trip_id
 
 Schema for Drivers
 
