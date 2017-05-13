@@ -53,8 +53,9 @@ def activate_route():
     # response is the list of people taking this route 
     body = request.get_json()
     driver_name = body['driverName']
-    route_id = body['routeId']
-    res_trip = trips.search((Trips.driver_id == driver_name) & (Trips.route_id == route_id))
+    # route_id = body['routeId']
+    # res_trip = trips.search((Trips.driver_id == driver_name) & (Trips.route_id == route_id))
+    res_trip = trips.search(Trips.driver_id == driver_name)
     res = passengers.search(Passenger.trip_id == res_trip[0]['trip_id'])
     passenger_list = []
     for r in res:
