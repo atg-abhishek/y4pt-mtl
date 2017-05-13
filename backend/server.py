@@ -30,7 +30,7 @@ def test():
 def add_driver():
     body = request.get_json()
     add_entry('drivers', body)
-    return "done"
+    return jsonify({"result" : "done"})
 
 @app.route('/plan_route', methods=['POST'])
 def plan_route():
@@ -45,14 +45,14 @@ def activate_route():
     # POST request with route id 
     # send notification to chatbot
     # response is the list of people taking this route 
-    return "activated route"
+    return jsonify({"result" : "activated route"})
 
 # optional for now 
 @app.route('/cancel_route', methods=['POST'])
 def cancel_route():
     # POST request with route id 
     # send notification to chatbot 
-    return "route cancelled"
+    return jsonify({"result" : "cancelled route"})
 
 '''
 DB Functions
