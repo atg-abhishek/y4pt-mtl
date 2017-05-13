@@ -42,7 +42,7 @@ def requestJourney():
 		}
 	}
 
-	r = requests.post("{ROOT}/journeys".format(ROOT=PLATFORM_API_URL), json=body, headers=headers)
+	r = requests.post("{ROOT}/journeys".format(ROOT=PLATFORM_API_URL), data=body, headers=headers)
 	journey = r.json()
 
 	with open('journey2.json','w') as outfile:
