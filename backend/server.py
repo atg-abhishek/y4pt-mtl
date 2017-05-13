@@ -26,7 +26,7 @@ if len(sys.argv)>1 and sys.argv[1] == "prod":
 
 @app.route('/')
 def hello():
-    return "the server is up!"
+    return jsonify({"result" : "the server is up!"})
 
 @app.route('/test')
 def test():
@@ -112,6 +112,12 @@ def add_route():
     routeJson = parseRoute(line)
     #add_entry('routes', body)
     return jsonify({"result" : "done"})
+
+'''
+
+Endpoints for the chat bots 
+
+'''
 
 '''
 DB Functions
