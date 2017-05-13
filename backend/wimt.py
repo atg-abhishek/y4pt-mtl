@@ -35,7 +35,7 @@ def requestJourney(location , destination):
         }
     }
 
-    r = requests.post("{ROOT}/journeys".format(ROOT=PLATFORM_API_URL), data=body, headers=headers)
+    r = requests.post("{ROOT}/journeys".format(ROOT=PLATFORM_API_URL), json=body, headers=headers)
     journey = r.json()
 
     return journey
@@ -65,10 +65,10 @@ def parseRoute(line):
 if __name__ == "__main__":
     WIMT_TOKEN = getAccessToken()
     line = getLine([18.676517,-34.030118],[18.566178,-33.979593])
-    print(line['line']['shortName'])
-    print(line['line']['id'])
+    #print(line['line']['shortName'])
+    #print(line['line']['id'])
     routeJson = parseRoute(line)
-    print(routeJson)
+    #print(routeJson)
 
 #[18.676517,-34.030118],[18.566178,-33.979593]
 #[18.531295,-33.943695],[18.676517,-34.030118]
