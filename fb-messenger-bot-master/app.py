@@ -16,9 +16,6 @@ def verify():
         if not request.args.get("hub.verify_token") == os.environ["VERIFY_TOKEN"]:
             return "Verification token mismatch", 403
         return request.args["hub.challenge"], 200
-		
-	print("patate")	
-    sys.stdout.flush()
     
     return "Hello world", 200
 
@@ -42,10 +39,10 @@ def webhook():
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event["message"]["text"]  # the message's text
 
-                    send_message(sender_id, "roger that!")
-
-                if messaging_event.get("delivery"):  # delivery confirmation
-                    pass
+                    atext = text(sender_id, "Hi! Where would you like to go?")
+                    aQuery = ask_location(sender_id)
+                    send_message(sender_id, atext)
+                    send_message(sender_id, aQuery)
 
                 if messaging_event.get("optin"):  # optin confirmation
                     pass
@@ -53,31 +50,51 @@ def webhook():
                 if messaging_event.get("postback"):  # user clicked/tapped "postback" button in earlier message
                     pass
 
+                if messaging_event.get("attachements"):
+                    pass  # send_message(sender_id, "yoyoyo")
+
+
     return "ok", 200
 
 
-def send_message(recipient_id, message_text):
-
-    log("sending message to {recipient}: {text}".format(recipient=recipient_id, text=message_text))
-
+def send_message(user_id, data):
     params = {
         "access_token": os.environ["PAGE_ACCESS_TOKEN"]
     }
     headers = {
         "Content-Type": "application/json"
     }
-    data = json.dumps({
-        "recipient": {
-            "id": recipient_id
-        },
-        "message": {
-            "text": message_text
-        }
-    })
-    r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
+
+    aData = data
+    r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=aData)
     if r.status_code != 200:
         log(r.status_code)
         log(r.text)
+
+
+def text(user_id, message):
+    return json.dumps({
+        "recipient": {
+            "id": user_id
+        },
+        "message": {
+            "text": message
+        }
+    })
+
+
+def ask_location(user_id):
+    return json.dumps({
+        "recipient": {
+            "id": user_id
+        },
+        "message": {
+            "text": "Please share your location:",
+            "quick_replies": [{
+                "content_type": "location",
+            }]
+        }
+    })
 
 
 def log(message):  # simple wrapper for logging to stdout on heroku

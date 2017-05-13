@@ -31,6 +31,12 @@ def get_routes():
     tab = select_table("routes")
     return jsonify({"route_list":tab.all()})
 
+@app.route('/add_user', methods=['POST'])
+def add_user():
+    body = request.get_json()
+    add_entry('users', body)
+    return jsonify({"result" : "done"})
+
 @app.route('/plan_route', methods=['POST'])
 def plan_route():
     body = request.get_json()
@@ -85,7 +91,8 @@ Schema for User
 name, userid, profile_image, curr_loc [lat,lng], status
 
 Schema for Drivers
-active route, status (1 is active, 0 is inactive), capacity, curr_passengers, driver_name
+
+active_route, status (1 is active, 0 is inactive), capacity, curr_passengers, driver_name
 
 Schema for Routes
 start, stop (each in lat, lng)
