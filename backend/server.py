@@ -18,6 +18,7 @@ trips = db.table('trips')
 
 Passenger = Query()
 Trips = Query()
+Routes = Query()
 
 WIMT_TOKEN = wimt.getAccessToken()
 
@@ -66,8 +67,9 @@ def activate_route():
     '''
     Send notification to all the passengers subscribed to this one
     '''
-
-    temp = {"passengers" : passenger_list, "coordinates" : res_trip['coordinates']}
+    x = routes.search(Routes.route_id == res_trip['route_id'])
+    coordinates = x[0]['coordinates']
+    temp = {"passengers" : passenger_list, "coordinates" : coordinates}
     
 
     return jsonify(temp)
