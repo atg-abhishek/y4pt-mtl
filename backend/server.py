@@ -106,11 +106,9 @@ def add_passenger():
 @app.route('/add_route', methods=['POST'])
 def add_route():
     body = request.get_json()
-    body['location']
-    body['destination']
-    line = getLine([18.676517,-34.030118],[18.566178,-33.979593])
+    line = getLine(body['location'],body['destination'])
     routeJson = parseRoute(line)
-    #add_entry('routes', body)
+    add_entry('routes', routeJson)
     return jsonify({"result" : "done"})
 
 '''
