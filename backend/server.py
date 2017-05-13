@@ -21,6 +21,9 @@ def hello():
 
 @app.route('/test')
 def test():
+	Driver = Query()
+	db.insert({'name':'John', 'age':22})
+	return db.search(Driver.name == 'John')
     return "echo the endpoint is working"
 
 if __name__ == "__main__":
