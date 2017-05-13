@@ -54,15 +54,17 @@ def activate_route():
     route_id = body['routeId']
     res_trip = trips.search((Trips.driver_id == driver_name) & (Trips.route_id == route_id))
     res = passengers.search(Passenger.trip_id == res_trip['trip_id'])
-    passenger_id_list = []
+    passenger_list = []
     for r in res:
-        passenger_id_list.append(res['passenger_id'])
+        passenger_list.append({"id" : r['passenger_id'], "curr_loc" : {"latitude" : r['curr_loc']["latitude"], "longitude" : r['curr_loc']['longitude']}, "name" : r['name'], "photo" : r['profile_image'], "status" : r['status'] })
     '''
     Send notification to all the passengers subscribed to this one
     '''
+
+    temp = {"passengers" : passenger_list, "coordinates" : res_trip['coordinates']}
     
 
-    return jsonify({"result" : "activated route"})
+    return jsonify(temp)
 
 @app.route('/pickup', methods=['POST'])
 def pickup():
