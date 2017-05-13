@@ -123,6 +123,15 @@ Endpoints for the chat bots
 
 '''
 
+@app.route('/start_booking', methods=['POST'])
+def start_booking():
+    body = request.get_json()
+    dropoff = body['dropoff']
+    pickup = body['pickup']
+    line = wimt.getLine([pickup['lng'], pickup['lat']], [dropoff['lng'], dropoff['lat']])
+    return jsonify(line)
+
+
 '''
 DB Functions
 '''
