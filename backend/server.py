@@ -12,40 +12,73 @@ DB_ADDRESS = "db.json"
 app = Flask(__name__)
 db = TinyDB(DB_ADDRESS)
 drivers = db.table('drivers')
-users = db.table('users')
+passengers = db.table('passengers')
 routes = db.table('routes')
+trips = db.table('trips')
+
+Passenger = Query()
+Trips = Query()
+
+WIMT_TOKEN = wimt.getAccessToken()
 
 if len(sys.argv)>1 and sys.argv[1] == "prod":
     HOST = '0.0.0.0'
 
 @app.route('/')
 def hello():
-    return "the server is up!"
+    return jsonify({"result" : "the server is up!"})
 
 @app.route('/test')
 def test():
     return "echo the endpoint is working"
 
-@app.route('/add_driver', methods=['POST'])
-def add_driver():
-    body = request.get_json()
-    add_entry('drivers', body)
-    return jsonify({"result" : "done"})
+@app.route('/get_routes')
+def get_routes():
+    tab = select_table("routes")
+    return jsonify({"route_list":tab.all()})
 
 @app.route('/plan_route', methods=['POST'])
 def plan_route():
     body = request.get_json()
-    pprint(body)
-    # POST request 
-    # send me the route id , date , time 
+    driver_name = body['driverName']
+    route_id = body['routeId']
+    dt = body['date']
+    trips.insert({"route_id" : route_id, "datetime" : dt, "driver_name" : driver_name })
     return jsonify({"result" : "done"})
 
 @app.route('/activate_route', methods=['POST'])
 def activate_route():
-    # POST request with route id 
+    # POST request with driverName, routeId
     # send notification to chatbot
     # response is the list of people taking this route 
-    return jsonify({"result" : "activated route"})
+    body = request.get_json()
+    driver_name = body['driverName']
+    # route_id = body['routeId']
+    # res_trip = trips.search((Trips.driver_id == driver_name) & (Trips.route_id == route_id))
+    res_trip = trips.search(Trips.driver_id == driver_name)
+    res = passengers.search(Passenger.trip_id == res_trip[0]['trip_id'])
+    passenger_list = []
+    for r in res:
+        passenger_list.append({"id" : r['passenger_id'], "curr_loc" : {"latitude" : r['curr_loc']["latitude"], "longitude" : r['curr_loc']['longitude']}, "name" : r['name'], "photo" : r['profile_image'], "status" : r['status'] })
+    '''
+    Send notification to all the passengers subscribed to this one
+    '''
+
+    temp = {"passengers" : passenger_list, "coordinates" : res_trip['coordinates']}
+    
+
+    return jsonify(temp)
+
+@app.route('/pickup', methods=['POST'])
+def pickup():
+    body = request.get_json()
+    passenger_id = body['passenger_id']
+    res = passengers.search(Passenger.passenger_id == passenger_id)
+    res[0]['status'] = 1
+    '''
+    Notify this passenger
+    '''
+    return jsonify({"result" : "picked up"})
 
 # optional for now 
 @app.route('/cancel_route', methods=['POST'])
@@ -55,27 +88,63 @@ def cancel_route():
     return jsonify({"result" : "cancelled route"})
 
 '''
+Populate the DB functions 
+
+'''
+
+@app.route('/add_driver', methods=['POST'])
+def add_driver():
+    body = request.get_json()
+    add_entry('drivers', body)
+    return jsonify({"result" : "done"})
+
+@app.route('/add_passenger', methods=['POST'])
+def add_passenger():
+    body = request.get_json()
+    add_entry('passengers', body)
+    return jsonify({"result" : "done"})
+
+@app.route('/add_route', methods=['POST'])
+def add_route():
+    body = request.get_json()
+    line = getLine(body['location'],body['destination'])
+    routeJson = parseRoute(line)
+    add_entry('routes', routeJson)
+    return jsonify({"result" : "done"})
+
+'''
+
+Endpoints for the chat bots 
+
+'''
+
+'''
 DB Functions
 '''
 
 '''
-Schema for User
-name, userid, profile_image, curr_loc [lat,lng], status
+Schema for Passenger
+name, user_id, profile_image, curr_loc [lng,lat], status, trip_id
 
 Schema for Drivers
-active route, status (1 is active, 0 is inactive), capacity, curr_passengers
+active_route, status (1 is active, 0 is inactive), capacity, curr_passengers, driver_name
 
 Schema for Routes
-start, stop (each in lat, lng)
+id, name, coordinates 
+
+Schema for Trips 
+route_id, datetime, driver_id
 '''
 
 def select_table(table_name):
     if table_name == "drivers":
         return drivers
-    if table_name == "users":
-        return users
+    if table_name == "passengers":
+        return passengers
     if table_name == "routes":
         return routes
+    if table_name == "trips":
+        return trips
 
 def add_entry(table_name, obj):
     tab = select_table(table_name)
