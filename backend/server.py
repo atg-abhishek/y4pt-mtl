@@ -1,6 +1,7 @@
 from flask import Flask, request
 import sys, requests, wimt
 from tinydb import TinyDB, Query
+from pprint import pprint
 # import ssl
 # context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
 # context.load_cert_chain('server.crt', 'server.key')
@@ -24,6 +25,28 @@ def hello():
 @app.route('/test')
 def test():
     return "echo the endpoint is working"
+
+@app.route('/plan_route')
+def plan_route():
+    body = request.get_json()
+    pprint(body)
+    # POST request 
+    # send me the route id , date , time 
+    return "planned route"
+
+@app.route('/activate_route')
+def activate_route():
+    # POST request with route id 
+    # send notification to chatbot
+    # response is the list of people taking this route 
+    return "activated route"
+
+# optional for now 
+@app.route('/cancel_route')
+def cancel_route():
+    # POST request with route id 
+    # send notification to chatbot 
+    return "route cancelled"
 
 '''
 DB Functions
