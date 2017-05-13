@@ -26,7 +26,7 @@ def hello():
 def test():
     return "echo the endpoint is working"
 
-@app.route('/add_driver')
+@app.route('/add_driver', methods=['POST'])
 def add_driver():
     body = request.get_json()
     add_entry('drivers', body)
@@ -40,7 +40,7 @@ def plan_route():
     # send me the route id , date , time 
     return "planned route"
 
-@app.route('/activate_route')
+@app.route('/activate_route', methods=['POST'])
 def activate_route():
     # POST request with route id 
     # send notification to chatbot
@@ -48,7 +48,7 @@ def activate_route():
     return "activated route"
 
 # optional for now 
-@app.route('/cancel_route')
+@app.route('/cancel_route', methods=['POST'])
 def cancel_route():
     # POST request with route id 
     # send notification to chatbot 
