@@ -43,7 +43,7 @@ def plan_route():
     driver_name = body['driverName']
     route_id = body['routeId']
     dt = body['date']
-    trips.insert({"route_id" : route_id, "datetime" : dt, "driver_name" : driver_name })
+    trips.insert({"route_id" : route_id, "datetime" : dt, "driver_name" : driver_name , "trip_id" : route_id + " " + dt})
     return jsonify({"result" : "done"})
 
 @app.route('/activate_route', methods=['POST'])
@@ -56,7 +56,11 @@ def activate_route():
     # route_id = body['routeId']
     # res_trip = trips.search((Trips.driver_id == driver_name) & (Trips.route_id == route_id))
     res_trip = trips.search(Trips.driver_id == driver_name)
-    res = passengers.search(Passenger.trip_id == res_trip[0]['trip_id'])
+    res = ""
+    for x in res_trip:
+        res = passengers.search(Passenger.trip_id == x['trip_id'])
+        if res is not None:
+            break
     passenger_list = []
     for r in res:
         passenger_list.append({"id" : r['passenger_id'], "curr_loc" : {"latitude" : r['curr_loc']["latitude"], "longitude" : r['curr_loc']['longitude']}, "name" : r['name'], "photo" : r['profile_image'], "status" : r['status'] })
