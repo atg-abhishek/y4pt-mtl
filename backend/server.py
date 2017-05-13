@@ -128,10 +128,12 @@ route_id, datetime, driver_id
 def select_table(table_name):
     if table_name == "drivers":
         return drivers
-    if table_name == "users":
-        return users
+    if table_name == "passengers":
+        return passengers
     if table_name == "routes":
         return routes
+    if table_name == "trips":
+        return trips
 
 def add_entry(table_name, obj):
     tab = select_table(table_name)
