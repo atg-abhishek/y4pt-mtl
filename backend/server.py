@@ -12,8 +12,9 @@ DB_ADDRESS = "db.json"
 app = Flask(__name__)
 db = TinyDB(DB_ADDRESS)
 drivers = db.table('drivers')
-users = db.table('users')
+passengers = db.table('passengers')
 routes = db.table('routes')
+trips = db.table('trips')
 
 if len(sys.argv)>1 and sys.argv[1] == "prod":
     HOST = '0.0.0.0'
@@ -31,24 +32,13 @@ def get_routes():
     tab = select_table("routes")
     return jsonify({"route_list":tab.all()})
 
-@app.route('/add_user', methods=['POST'])
-def add_user():
-    body = request.get_json()
-    add_entry('users', body)
-    return jsonify({"result" : "done"})
-
 @app.route('/plan_route', methods=['POST'])
 def plan_route():
     body = request.get_json()
     driver_name = body['driverName']
     route_id = body['routeId']
     date = body['date']
-    pprint(driver_name)
-    pprint(route_id)
-    pprint(date)
     
-    # POST request 
-    # send me the route id , date , time 
     return jsonify({"result" : "done"})
 
 @app.route('/activate_route', methods=['POST'])
@@ -80,7 +70,17 @@ def add_driver():
     add_entry('drivers', body)
     return jsonify({"result" : "done"})
 
+@app.route('/add_user', methods=['POST'])
+def add_user():
+    body = request.get_json()
+    add_entry('users', body)
+    return jsonify({"result" : "done"})
 
+@app.route('/add_route', methods=['POST'])
+def add_route():
+    body = request.get_json()
+    add_entry('routes', body)
+    return jsonify({"result" : "done"})
 
 '''
 DB Functions
@@ -95,7 +95,10 @@ Schema for Drivers
 active_route, status (1 is active, 0 is inactive), capacity, curr_passengers, driver_name
 
 Schema for Routes
-start, stop (each in lat, lng)
+id, name, coordinates 
+
+Schema for Trips 
+
 '''
 
 def select_table(table_name):
