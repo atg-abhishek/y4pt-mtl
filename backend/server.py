@@ -26,16 +26,21 @@ def hello():
 def test():
     return "echo the endpoint is working"
 
-@app.route('/add_driver', methods=['POST'])
-def add_driver():
-    body = request.get_json()
-    add_entry('drivers', body)
-    return jsonify({"result" : "done"})
+@app.route('/get_routes')
+def get_routes():
+    tab = select_table("routes")
+    return jsonify({"route_list":tab.all()})
 
 @app.route('/plan_route', methods=['POST'])
 def plan_route():
     body = request.get_json()
-    pprint(body)
+    driver_name = body['driverName']
+    route_id = body['routeId']
+    date = body['date']
+    pprint(driver_name)
+    pprint(route_id)
+    pprint(date)
+    
     # POST request 
     # send me the route id , date , time 
     return jsonify({"result" : "done"})
@@ -47,12 +52,29 @@ def activate_route():
     # response is the list of people taking this route 
     return jsonify({"result" : "activated route"})
 
+@app.route('/pickup')
+def pickup():
+    return jsonify({"result" : "picked up"})
+
 # optional for now 
 @app.route('/cancel_route', methods=['POST'])
 def cancel_route():
     # POST request with route id 
     # send notification to chatbot 
     return jsonify({"result" : "cancelled route"})
+
+'''
+Populate the DB functions 
+
+'''
+
+@app.route('/add_driver', methods=['POST'])
+def add_driver():
+    body = request.get_json()
+    add_entry('drivers', body)
+    return jsonify({"result" : "done"})
+
+
 
 '''
 DB Functions
@@ -63,7 +85,7 @@ Schema for User
 name, userid, profile_image, curr_loc [lat,lng], status
 
 Schema for Drivers
-active route, status (1 is active, 0 is inactive), capacity, curr_passengers
+active route, status (1 is active, 0 is inactive), capacity, curr_passengers, driver_name
 
 Schema for Routes
 start, stop (each in lat, lng)
