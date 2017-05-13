@@ -70,6 +70,9 @@ def pickup():
     passenger_id = body['passenger_id']
     res = passengers.search(Passenger.passenger_id == passenger_id)
     res[0]['status'] = 1
+    '''
+    Notify this passenger
+    '''
     return jsonify({"result" : "picked up"})
 
 # optional for now 
@@ -108,10 +111,9 @@ DB Functions
 
 '''
 Schema for Passenger
-name, userid, profile_image, curr_loc [lat,lng], status, trip_id
+name, user_id, profile_image, curr_loc [lng,lat], status, trip_id
 
 Schema for Drivers
-
 active_route, status (1 is active, 0 is inactive), capacity, curr_passengers, driver_name
 
 Schema for Routes
