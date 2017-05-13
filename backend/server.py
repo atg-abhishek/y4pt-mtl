@@ -37,8 +37,8 @@ def plan_route():
     body = request.get_json()
     driver_name = body['driverName']
     route_id = body['routeId']
-    date = body['date']
-    
+    dt = body['date']
+    trips.insert({"route_id" : route_id, "datetime" : dt, "driver_name" : driver_name })
     return jsonify({"result" : "done"})
 
 @app.route('/activate_route', methods=['POST'])
@@ -46,6 +46,9 @@ def activate_route():
     # POST request with route id 
     # send notification to chatbot
     # response is the list of people taking this route 
+
+
+
     return jsonify({"result" : "activated route"})
 
 @app.route('/pickup')
@@ -70,10 +73,10 @@ def add_driver():
     add_entry('drivers', body)
     return jsonify({"result" : "done"})
 
-@app.route('/add_user', methods=['POST'])
-def add_user():
+@app.route('/add_passenger', methods=['POST'])
+def add_passenger():
     body = request.get_json()
-    add_entry('users', body)
+    add_entry('passengers', body)
     return jsonify({"result" : "done"})
 
 @app.route('/add_route', methods=['POST'])
@@ -87,7 +90,7 @@ DB Functions
 '''
 
 '''
-Schema for User
+Schema for Passenger
 name, userid, profile_image, curr_loc [lat,lng], status
 
 Schema for Drivers
@@ -98,7 +101,7 @@ Schema for Routes
 id, name, coordinates 
 
 Schema for Trips 
-
+route_id, datetime, driver_id
 '''
 
 def select_table(table_name):
