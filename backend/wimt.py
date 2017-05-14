@@ -1,6 +1,6 @@
 import datetime
 import requests
-import simplejson as json
+import simplejson
 CLIENT_ID = 'e562c31c-8d56-4696-858c-9331c21688d4'
 CLIENT_SECRET = 'mYvtKREFRbA4zANzs1NQuGvLQmgOhmvJDpEl6kiu/cQ='
 PLATFORM_API_URL = 'https://platform.whereismytransport.com/api'
@@ -34,9 +34,10 @@ def requestJourney(location , destination):
             "coordinates": [location,destination]
         }
     }
-
     r = requests.post("{ROOT}/journeys".format(ROOT=PLATFORM_API_URL), json=body, headers=headers)
-    journey = r.json()
+    journey = simplejson.loads(r.text)
+
+    print(journey)
 
     return journey
 
@@ -49,6 +50,7 @@ def getLine(location, destination):
             if l['type'] == 'Transit':
                 if l['line']['mode'] == 'ShareTaxi':
                     return l
+    return "no line"    
 
 def parseRoute(line):
     route = {}
@@ -59,15 +61,15 @@ def parseRoute(line):
     for c in coords:
         route['coordinates'].append({'longitude': c[0],'latitude': c[1]})
 
-    return json.dumps(route)
+    return simplejson.dumps(route)
 
 if __name__ == "__main__":
     WIMT_TOKEN = getAccessToken()
     line = getLine([18.676517,-34.030118],[18.566178,-33.979593])
-    print(line['line']['shortName'])
-    print(line['line']['id'])
+    #print(line['line']['shortName'])
+    #print(line['line']['id'])
     routeJson = parseRoute(line)
-    print(routeJson)
+    #print(routeJson)
 
 #[18.676517,-34.030118],[18.566178,-33.979593]
 #[18.531295,-33.943695],[18.676517,-34.030118]
