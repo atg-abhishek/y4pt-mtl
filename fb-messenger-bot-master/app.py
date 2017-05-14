@@ -67,10 +67,20 @@ def webhook():
                                 destLong = long
                                 destAsked = True
 
+                                test1 = text(sender_id, "Got it!")
+                                send_message(sender_id, test1)
+
                             elif not pickedAsked:
                                 pickedLat = lat
                                 pickedLong = long
                                 pickedAsked = True
+
+                                test2 = text(sender_id, "Thanks! Calculating Route...")
+                                send_message(sender_id, test2)
+
+        if routeCalculated:
+                    final1 = text(sender_id, "You're all set! See you soon and thanks for using Find My Taxi :)")
+                    send_message(sender_id, final1)
 
         if not destAsked:
             query_location(sender_id, "Hi! Where would you like to go?")
@@ -79,16 +89,78 @@ def webhook():
             query_location(sender_id, "Where do you want to be picked up?")
 
         elif not routeCalculated:
-            final = text(sender_id, "Calculating route...")
+            final = text(sender_id, "We found a transport available for you in 12 minutes. Would you like to reserve it?")
             send_message(sender_id, final)
-            r = requests.get("http://ec2-204-236-212-212.compute-1.amazonaws.com:43001/")
 
-            test = text(sender_id, r.json()["result"])
-            send_message(sender_id, test)
+            headers = {"Content-type": "application/json"}
+            # trajectory_info = build_route_json()
+            # r = requests.post("http://ec2-204-236-212-212.compute-1.amazonaws.com:43001/start_booking", data=trajectory_info, headers=headers)
+
+            # answer = r.json()["result"]
+
+            # final = text(sender_id, answer)
+            # send_message(sender_id, final)
+
             routeCalculated = True
+            # hasRoute = False
+#
+            # if hasRoute:
+            #    prompt_yesno(sender_id,
+            #                 "Would you like to book the transport?",
+            #                 "Your transport is reserved. Thank you for using Find My Taxi.",
+            #                 "Thank you for using Find my Taxi :)")
+            # else:
+            #    prompt_yesno(sender_id,
+            #                 "No Transport was found. Do you want to receive a notification when a transport becomes available for your route?",
+            #                 "Noted! We'll notify you as soon as we have something for you",
+            #                 "Thank you for using Find My Taxi :)")
 
     return "ok", 200
 
+
+def prompt_yesno(user_id, message, ansy, ansn):
+    return json.dumps({
+        "recipient": {
+            "id": user_id
+        },
+        "message": {
+            "text": message,
+            "quick_replies": [{
+                "content_type": "text",
+                "title": "Yes",
+                "payload": ansy,
+            },
+            {
+                "content_type": "text",
+                "title": "No",
+                "payload": ansn,
+            }]
+        }
+    })
+
+
+def build_route_json():
+    # return json.dumps({
+    #    "pickup": {
+    #        "lat": pickedLat,
+    #        "lng": pickedLong
+    #    },
+    #    "dropoff": {
+    #        "lat": destLat,
+    #        "lng": destLong
+    #    }
+    # })
+
+    return json.dumps({
+        "pickup": {
+            "lat": 18.52184,
+            "lng": -33.9464
+        },
+        "dropoff": {
+            "lat": 18.42842,
+            "lng": -33.92264
+        }
+    })
 
 def query_location(user_id, question):
     aQuery = location(user_id, question)
